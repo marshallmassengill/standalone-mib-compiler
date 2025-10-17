@@ -1,0 +1,13 @@
+META-INF/native-image/picocli-generated/org.opennms.features/standalone-mib-compiler/proxy-config.json
+META-INF/native-image/picocli-generated/org.opennms.features/standalone-mib-compiler/reflect-config.json
+org/opennms/mibcompiler/model/Maskelement.class
+org/opennms/mibcompiler/model/Decode.class
+org/opennms/mibcompiler/model/Mask.class
+META-INF/native-image/picocli-generated/org.opennms.features/standalone-mib-compiler/resource-config.json
+org/opennms/mibcompiler/model/Varbindsdecode.class
+org/opennms/mibcompiler/model/Logmsg.class
+org/opennms/mibcompiler/parser/MibToEventsParser.class
+org/opennms/mibcompiler/cli/MibCompilerCLI.class
+org/opennms/mibcompiler/model/Events.class
+org/opennms/mibcompiler/model/Event.class
+org/opennms/mibcompiler/parser/ProblemEventHandler.class

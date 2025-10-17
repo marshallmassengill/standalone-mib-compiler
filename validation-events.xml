@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<events>
+    <event>
+        <uei>uei.opennms.org/mib/systemStartup</uei>
+        <event-label>VALIDATION-TEST-MIB defined trap event: systemStartup</event-label>
+        <descr>
+&lt;p&gt;System has started up successfully&lt;/p&gt;&lt;table&gt;
+	&lt;tr&gt;&lt;td&gt;&lt;b&gt;
+
+	testName&lt;/b&gt;&lt;/td&gt;&lt;td&gt;
+	%parm[#1]%;&lt;/td&gt;&lt;td&gt;&lt;p&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+	</descr>
+        <logmsg dest="logndisplay">&lt;p&gt;
+	systemStartup trap received
+	testName=%parm[#1]%&lt;/p&gt;
+	</logmsg>
+        <severity>Indeterminate</severity>
+        <mask>
+            <maskelement>
+                <mename>id</mename>
+                <mevalue>.1.3.6.1.4.1.99999</mevalue>
+            </maskelement>
+            <maskelement>
+                <mename>generic</mename>
+                <mevalue>6</mevalue>
+            </maskelement>
+            <maskelement>
+                <mename>specific</mename>
+                <mevalue>1</mevalue>
+            </maskelement>
+        </mask>
+    </event>
+    <event>
+        <uei>uei.opennms.org/mib/thresholdExceeded</uei>
+        <event-label>VALIDATION-TEST-MIB defined trap event: thresholdExceeded</event-label>
+        <descr>
+&lt;p&gt;A threshold has been exceeded for a monitored metric&lt;/p&gt;&lt;table&gt;
+	&lt;tr&gt;&lt;td&gt;&lt;b&gt;
+
+	testName&lt;/b&gt;&lt;/td&gt;&lt;td&gt;
+	%parm[#1]%;&lt;/td&gt;&lt;td&gt;&lt;p&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;td&gt;&lt;b&gt;
+
+	testValue&lt;/b&gt;&lt;/td&gt;&lt;td&gt;
+	%parm[#2]%;&lt;/td&gt;&lt;td&gt;&lt;p&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;
+	&lt;tr&gt;&lt;td&gt;&lt;b&gt;
+
+	testStatus&lt;/b&gt;&lt;/td&gt;&lt;td&gt;
+	%parm[#3]%;&lt;/td&gt;&lt;td&gt;&lt;p&gt;
+		unknown(0)
+		ok(1)
+		warning(2)
+		critical(3)
+	&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+	</descr>
+        <logmsg dest="logndisplay">&lt;p&gt;
+	thresholdExceeded trap received
+	testName=%parm[#1]%
+	testValue=%parm[#2]%
+	testStatus=%parm[#3]%&lt;/p&gt;
+	</logmsg>
+        <severity>Indeterminate</severity>
+        <mask>
+            <maskelement>
+                <mename>id</mename>
+                <mevalue>.1.3.6.1.4.1.99999</mevalue>
+            </maskelement>
+            <maskelement>
+                <mename>generic</mename>
+                <mevalue>6</mevalue>
+            </maskelement>
+            <maskelement>
+                <mename>specific</mename>
+                <mevalue>2</mevalue>
+            </maskelement>
+        </mask>
+        <varbindsdecode parmid="parm[#3]">
+            <decode varbindvalue="0" varbinddecodedstring="unknown"/>
+            <decode varbindvalue="1" varbinddecodedstring="ok"/>
+            <decode varbindvalue="2" varbinddecodedstring="warning"/>
+            <decode varbindvalue="3" varbinddecodedstring="critical"/>
+        </varbindsdecode>
+    </event>
+    <event>
+        <uei>uei.opennms.org/mib/systemShutdown</uei>
+        <event-label>VALIDATION-TEST-MIB defined trap event: systemShutdown</event-label>
+        <descr>
+&lt;p&gt;System is shutting down&lt;/p&gt;&lt;table&gt;
+	&lt;tr&gt;&lt;td&gt;&lt;b&gt;
+
+	testName&lt;/b&gt;&lt;/td&gt;&lt;td&gt;
+	%parm[#1]%;&lt;/td&gt;&lt;td&gt;&lt;p&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+	</descr>
+        <logmsg dest="logndisplay">&lt;p&gt;
+	systemShutdown trap received
+	testName=%parm[#1]%&lt;/p&gt;
+	</logmsg>
+        <severity>Indeterminate</severity>
+        <mask>
+            <maskelement>
+                <mename>id</mename>
+                <mevalue>.1.3.6.1.4.1.99999</mevalue>
+            </maskelement>
+            <maskelement>
+                <mename>generic</mename>
+                <mevalue>6</mevalue>
+            </maskelement>
+            <maskelement>
+                <mename>specific</mename>
+                <mevalue>3</mevalue>
+            </maskelement>
+        </mask>
+    </event>
+</events>

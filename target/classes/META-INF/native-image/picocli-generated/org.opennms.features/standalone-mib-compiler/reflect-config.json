@@ -1,0 +1,28 @@
+[
+  {
+    "name" : "org.opennms.mibcompiler.cli.MibCompilerCLI",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "fields" : [
+      { "name" : "input" },
+      { "name" : "mibDirectory" },
+      { "name" : "outputFile" },
+      { "name" : "processAll" },
+      { "name" : "ueiBase" },
+      { "name" : "verbose" }
+    ]
+  },
+  {
+    "name" : "picocli.CommandLine$AutoHelpMixin",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true,
+    "fields" : [
+      { "name" : "helpRequested" },
+      { "name" : "versionRequested" }
+    ]
+  }
+]

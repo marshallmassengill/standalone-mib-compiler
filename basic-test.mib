@@ -1,0 +1,36 @@
+BASIC-TEST-MIB DEFINITIONS ::= BEGIN
+
+-- Basic MIB without external dependencies
+basicTestMib OBJECT IDENTIFIER ::= { 1 3 6 1 4 1 99999 }
+
+-- Test objects
+testString OBJECT-TYPE
+    SYNTAX OCTET STRING
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION "Test string object"
+    ::= { basicTestMib 1 }
+
+testCounter OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory  
+    DESCRIPTION "Test counter object"
+    ::= { basicTestMib 2 }
+
+-- Trap definitions
+testTrapPrefix OBJECT IDENTIFIER ::= { basicTestMib 0 }
+
+testTrap TRAP-TYPE
+    ENTERPRISE basicTestMib
+    VARIABLES { testString, testCounter }
+    DESCRIPTION "A basic test trap"
+    ::= 1
+
+testTrap2 TRAP-TYPE
+    ENTERPRISE basicTestMib  
+    VARIABLES { testString }
+    DESCRIPTION "Another test trap"
+    ::= 2
+
+END

@@ -1,0 +1,54 @@
+VALIDATION-TEST-MIB DEFINITIONS ::= BEGIN
+
+-- Demonstration MIB for validation purposes
+
+-- Define the MIB hierarchy directly without imports
+validationTestMib OBJECT IDENTIFIER ::= { 1 3 6 1 4 1 99999 }
+
+-- Test objects for trap parameters
+testName OBJECT-TYPE
+    SYNTAX OCTET STRING
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION "Name of the test object"
+    ::= { validationTestMib 1 }
+
+testValue OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION "Value of the test metric"
+    ::= { validationTestMib 2 }
+
+testStatus OBJECT-TYPE
+    SYNTAX INTEGER { 
+        unknown(0),
+        ok(1), 
+        warning(2), 
+        critical(3) 
+    }
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION "Status of the test"
+    ::= { validationTestMib 3 }
+
+-- Trap definitions to validate event generation
+systemStartup TRAP-TYPE
+    ENTERPRISE validationTestMib
+    VARIABLES { testName }
+    DESCRIPTION "System has started up successfully"
+    ::= 1
+
+thresholdExceeded TRAP-TYPE
+    ENTERPRISE validationTestMib
+    VARIABLES { testName, testValue, testStatus }
+    DESCRIPTION "A threshold has been exceeded for a monitored metric"
+    ::= 2
+
+systemShutdown TRAP-TYPE
+    ENTERPRISE validationTestMib
+    VARIABLES { testName }
+    DESCRIPTION "System is shutting down"
+    ::= 3
+
+END
