@@ -1,0 +1,49 @@
+SIMPLE-TEST-MIB DEFINITIONS ::= BEGIN
+
+IMPORTS
+    enterprises, OBJECT-TYPE, NOTIFICATION-TYPE, MODULE-IDENTITY
+        FROM SNMPv2-SMI
+    DisplayString
+        FROM SNMPv2-TC;
+
+simpleTestMib MODULE-IDENTITY
+    LAST-UPDATED "202401010000Z"
+    ORGANIZATION "Test Organization"
+    CONTACT-INFO "test@example.com"
+    DESCRIPTION "A simple test MIB for demonstration"
+    ::= { enterprises 99999 }
+
+-- Test group
+testGroup OBJECT IDENTIFIER ::= { simpleTestMib 1 }
+
+-- Test objects
+testString OBJECT-TYPE
+    SYNTAX DisplayString
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION "Test string object"
+    ::= { testGroup 1 }
+
+testCounter OBJECT-TYPE
+    SYNTAX INTEGER
+    ACCESS read-only
+    STATUS mandatory
+    DESCRIPTION "Test counter object"
+    ::= { testGroup 2 }
+
+-- Trap definitions
+testTrapPrefix OBJECT IDENTIFIER ::= { simpleTestMib 0 }
+
+testTrap NOTIFICATION-TYPE
+    OBJECTS { testString, testCounter }
+    STATUS current
+    DESCRIPTION "A simple test trap notification"
+    ::= { testTrapPrefix 1 }
+
+testTrap2 NOTIFICATION-TYPE
+    OBJECTS { testString }
+    STATUS current
+    DESCRIPTION "Another test trap with enum parameter"
+    ::= { testTrapPrefix 2 }
+
+END
