@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class ProblemEventHandler implements org.jsmiparser.util.problem.ProblemEventHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProblemEventHandler.class);
-    private static final Pattern DEPENDENCY_PATTERN = Pattern.compile("Cannot find module ([^,]+)", Pattern.MULTILINE);
+    private static final Pattern DEPENDENCY_PATTERN = Pattern.compile("Cannot find module .*:([^:\\s,]+)$", Pattern.MULTILINE);
 
     private int[] severityCounters = new int[ProblemSeverity.values().length];
     private int totalCounter;
