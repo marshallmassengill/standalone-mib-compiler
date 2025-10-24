@@ -107,9 +107,11 @@ public class MibCompilerCLI implements Callable<Integer> {
                                 allEvents.getEvents().addAll(events.getEvents());
                                 processedCount++;
                                 System.out.println("  Generated " + events.getEvents().size() + " events");
+                            } else if (events != null && events.getEvents().isEmpty()) {
+                                System.out.println("  No trap or notification definitions found (0 events generated)");
                             } else {
                                 errorCount++;
-                                System.err.println("  Failed to process MIB file");
+                                System.err.println("  Failed to parse MIB file");
                             }
                         }
                     }
@@ -125,9 +127,13 @@ public class MibCompilerCLI implements Callable<Integer> {
                     allEvents = events;
                     processedCount = 1;
                     System.out.println("Generated " + events.getEvents().size() + " events");
+                } else if (events != null && events.getEvents().isEmpty()) {
+                    System.out.println("No trap or notification definitions found (0 events generated)");
+                    System.out.println("\nNote: This MIB does not contain any TRAP-TYPE or NOTIFICATION-TYPE definitions.");
+                    System.out.println("The MIB may only define data structures for monitoring/polling purposes.");
                 } else {
                     errorCount = 1;
-                    System.err.println("Failed to process MIB file");
+                    System.err.println("Failed to parse MIB file");
                 }
             }
 
