@@ -50,9 +50,13 @@ public class MibCompilerCLI implements Callable<Integer> {
             description = "Enable verbose logging")
     private boolean verbose;
 
-    @Option(names = {"--process-all"}, 
+    @Option(names = {"--process-all"},
             description = "Process all MIB files in directory (when input is a directory)")
     private boolean processAll;
+
+    @Option(names = {"--individual-files"},
+            description = "Create separate event files for each MIB instead of combining into one file (requires --process-all)")
+    private boolean individualFiles;
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new MibCompilerCLI()).execute(args);
@@ -94,6 +98,22 @@ public class MibCompilerCLI implements Callable<Integer> {
 
             if (input.isDirectory()) {
                 if (processAll) {
+                    // Determine output directory for individual files
+                    File outputDirectory = null;
+                    if (individualFiles) {
+                        if (outputFile != null) {
+                            // Use specified output as directory
+                            outputDirectory = outputFile.isDirectory() ? outputFile : outputFile.getParentFile();
+                            if (outputDirectory == null) {
+                                outputDirectory = new File(".");
+                            }
+                        } else {
+                            // Use current directory
+                            outputDirectory = new File(".");
+                        }
+                        System.out.println("Writing individual event files to: " + outputDirectory.getAbsolutePath());
+                    }
+
                     // Process all MIB files in directory
                     try (Stream<Path> paths = Files.walk(input.toPath())) {
                         for (Path path : paths.filter(Files::isRegularFile)
@@ -101,12 +121,20 @@ public class MibCompilerCLI implements Callable<Integer> {
                                               .toArray(Path[]::new)) {
                             File mibFile = path.toFile();
                             System.out.println("Processing MIB file: " + mibFile.getName());
-                            
+
                             Events events = processMibFile(mibFile);
                             if (events != null && !events.getEvents().isEmpty()) {
-                                allEvents.getEvents().addAll(events.getEvents());
+                                if (individualFiles) {
+                                    // Write events to individual file
+                                    String outputFileName = getOutputFileName(mibFile);
+                                    File individualOutputFile = new File(outputDirectory, outputFileName);
+                                    writeEventsToFile(events, individualOutputFile);
+                                    System.out.println("  Generated " + events.getEvents().size() + " events -> " + individualOutputFile.getName());
+                                } else {
+                                    allEvents.getEvents().addAll(events.getEvents());
+                                    System.out.println("  Generated " + events.getEvents().size() + " events");
+                                }
                                 processedCount++;
-                                System.out.println("  Generated " + events.getEvents().size() + " events");
                             } else if (events != null && events.getEvents().isEmpty()) {
                                 System.out.println("  No trap or notification definitions found (0 events generated)");
                             } else {
@@ -142,22 +170,26 @@ public class MibCompilerCLI implements Callable<Integer> {
                 return 1;
             }
 
-            // Output results
-            String xmlOutput = marshalEvents(allEvents);
-            
-            if (outputFile != null) {
-                try (FileWriter writer = new FileWriter(outputFile)) {
-                    writer.write(xmlOutput);
+            // Output results (only if not using individual files mode)
+            if (!individualFiles) {
+                String xmlOutput = marshalEvents(allEvents);
+
+                if (outputFile != null) {
+                    try (FileWriter writer = new FileWriter(outputFile)) {
+                        writer.write(xmlOutput);
+                    }
+                    System.out.println("Events written to: " + outputFile.getAbsolutePath());
+                } else {
+                    System.out.println("\n" + xmlOutput);
                 }
-                System.out.println("Events written to: " + outputFile.getAbsolutePath());
-            } else {
-                System.out.println("\n" + xmlOutput);
             }
 
             System.out.println("\nSummary:");
             System.out.println("  Processed: " + processedCount + " MIB files");
             System.out.println("  Errors: " + errorCount + " MIB files");
-            System.out.println("  Total events generated: " + allEvents.getEvents().size());
+            if (!individualFiles) {
+                System.out.println("  Total events generated: " + allEvents.getEvents().size());
+            }
 
             return errorCount > 0 ? 2 : 0; // Exit with 2 if there were errors, 0 if all successful
 
@@ -212,11 +244,28 @@ public class MibCompilerCLI implements Callable<Integer> {
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-        
+
         StringWriter writer = new StringWriter();
         writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         marshaller.marshal(events, writer);
-        
+
         return writer.toString();
+    }
+
+    private String getOutputFileName(File mibFile) {
+        String fileName = mibFile.getName();
+        // Remove extension if present
+        int lastDot = fileName.lastIndexOf('.');
+        if (lastDot > 0) {
+            fileName = fileName.substring(0, lastDot);
+        }
+        return fileName + "-events.xml";
+    }
+
+    private void writeEventsToFile(Events events, File outputFile) throws Exception {
+        String xmlOutput = marshalEvents(events);
+        try (FileWriter writer = new FileWriter(outputFile)) {
+            writer.write(xmlOutput);
+        }
     }
 }
