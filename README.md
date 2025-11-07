@@ -18,6 +18,7 @@ This CLI application parses SNMP MIB files and generates OpenNMS-compatible even
 - Process individual MIB files or entire directories
 - Configurable UEI (Unique Event Identifier) base for generated events
 - Output to file or stdout with formatted XML
+- Individual event files per MIB or combined output
 - Verbose logging for troubleshooting
 - Comprehensive error reporting and validation
 
@@ -60,8 +61,11 @@ java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar example.mib
 # Process a single MIB file with output to file
 java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar -o events.xml example.mib
 
-# Process all MIB files in a directory
+# Process all MIB files in a directory (combined output)
 java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar --process-all /path/to/mib-directory/
+
+# Process all MIB files and create individual event files per MIB
+java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar --process-all --individual-files /path/to/mib-directory/
 ```
 
 ### Advanced Usage
@@ -84,6 +88,21 @@ java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar \
   --verbose \
   -o all-network-events.xml \
   /path/to/network-mibs/
+
+# Create individual event files with custom output directory
+java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar \
+  --process-all \
+  --individual-files \
+  -o /output/directory/ \
+  /path/to/network-mibs/
+
+# Individual files with custom UEI base
+java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar \
+  --process-all \
+  --individual-files \
+  -u "uei.company.org/network" \
+  -o ./events/ \
+  /path/to/network-mibs/
 ```
 
 ### Command Line Options
@@ -91,12 +110,37 @@ java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar \
 | Option | Description | Default |
 |--------|-------------|---------|
 | `-d, --mib-directory DIR` | Directory containing MIB dependencies | Input file's directory |
-| `-o, --output FILE` | Output file for events XML | stdout |
+| `-o, --output FILE` | Output file for events XML (or directory with `--individual-files`) | stdout |
 | `-u, --uei-base BASE` | Base UEI for generated events | `uei.opennms.org/mib` |
 | `-v, --verbose` | Enable verbose logging | false |
 | `--process-all` | Process all MIB files in directory | false |
+| `--individual-files` | Create separate event files for each MIB (requires `--process-all`) | false |
 | `-h, --help` | Show help message | - |
 | `-V, --version` | Show version information | - |
+
+## Output Modes
+
+The tool supports two output modes when processing multiple MIB files:
+
+### Combined Output (Default)
+When using `--process-all` without `--individual-files`, all events from all MIB files are combined into a single XML file. This is useful when you want a single event definition file for your OpenNMS configuration.
+
+### Individual File Output
+When using `--process-all` with `--individual-files`, each MIB file generates its own event XML file. Output files are named based on the input MIB filename:
+
+- Input: `RFC1213-MIB.mib` → Output: `RFC1213-MIB-events.xml`
+- Input: `IF-MIB.txt` → Output: `IF-MIB-events.xml`
+- Input: `CISCO-DEVICE` → Output: `CISCO-DEVICE-events.xml`
+
+The output directory can be specified with `-o`:
+- If `-o` is not specified, files are written to the current directory
+- If `-o` specifies a directory, files are written to that directory
+- If `-o` specifies a file path, its parent directory is used
+
+This mode is useful when:
+- Managing event definitions separately for each vendor or device type
+- Importing events selectively into OpenNMS
+- Organizing large MIB collections
 
 ## Output Format
 
@@ -192,7 +236,7 @@ EOF
 java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar device-alerts.mib
 ```
 
-### Example 2: Batch Processing
+### Example 2: Batch Processing (Combined Output)
 
 ```bash
 # Process all MIBs in a directory with custom configuration
@@ -206,13 +250,39 @@ java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar \
 # Output shows processing results:
 # Processing MIB file: cisco-device.mib
 # Generated 5 events
-# Processing MIB file: juniper-alerts.mib  
+# Processing MIB file: juniper-alerts.mib
 # Generated 12 events
 # Events written to: network-events.xml
 # Summary:
 #   Processed: 2 MIB files
 #   Errors: 0 MIB files
 #   Total events generated: 17
+```
+
+### Example 3: Batch Processing (Individual Files)
+
+```bash
+# Process all MIBs and create individual event files
+java -jar standalone-mib-compiler-1.0.0-SNAPSHOT.jar \
+  --process-all \
+  --individual-files \
+  -u "uei.company.org/network" \
+  -o ./network-events/ \
+  /opt/mibs/network-devices/
+
+# Output shows processing results:
+# Writing individual event files to: /path/to/network-events
+# Processing MIB file: cisco-device.mib
+#   Generated 5 events -> cisco-device-events.xml
+# Processing MIB file: juniper-alerts.mib
+#   Generated 12 events -> juniper-alerts-events.xml
+# Summary:
+#   Processed: 2 MIB files
+#   Errors: 0 MIB files
+
+# Generated files:
+# network-events/cisco-device-events.xml
+# network-events/juniper-alerts-events.xml
 ```
 
 ## Troubleshooting
