@@ -6,6 +6,7 @@
     "allDeclaredMethods" : true,
     "allPublicMethods" : true,
     "fields" : [
+      { "name" : "individualFiles" },
       { "name" : "input" },
       { "name" : "mibDirectory" },
       { "name" : "outputFile" },

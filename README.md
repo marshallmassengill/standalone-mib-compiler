@@ -187,7 +187,8 @@ The tool generates OpenNMS-compatible event XML with the following structure:
         <mevalue>1</mevalue>
       </maskelement>
     </mask>
-    <varbindsdecode parmid="parm[#2]">
+    <varbindsdecode>
+      <parmid>parm[#2]</parmid>
       <decode varbindvalue="1" varbinddecodedstring="normal"/>
       <decode varbindvalue="2" varbinddecodedstring="warning"/>
       <decode varbindvalue="3" varbinddecodedstring="critical"/>

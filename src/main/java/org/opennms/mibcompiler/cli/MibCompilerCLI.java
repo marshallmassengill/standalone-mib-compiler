@@ -244,6 +244,7 @@ public class MibCompilerCLI implements Callable<Integer> {
         Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+        marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
 
         StringWriter writer = new StringWriter();
         writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");

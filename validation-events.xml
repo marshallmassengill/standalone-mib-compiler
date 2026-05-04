@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <events>
     <event>
         <uei>uei.opennms.org/mib/systemStartup</uei>
@@ -75,7 +74,8 @@
                 <mevalue>2</mevalue>
             </maskelement>
         </mask>
-        <varbindsdecode parmid="parm[#3]">
+        <varbindsdecode>
+            <parmid>parm[#3]</parmid>
             <decode varbindvalue="0" varbinddecodedstring="unknown"/>
             <decode varbindvalue="1" varbinddecodedstring="ok"/>
             <decode varbindvalue="2" varbinddecodedstring="warning"/>
